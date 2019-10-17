@@ -11,7 +11,7 @@ It is intended as a cross-platform, modern replacement for `wc`.
 - [ ] Publish on homebrew
 - [ ] Publish on other platforms, which?
 - [ ] Write a blogpost about the process of making this; as a showcase of creating and publishing a tool
-- [ ] Optional JSON output format
+- [x] Optional JSON output format
 - [ ] Concurrency
 - [ ] Benchmark & write a blogpost about the process of benchmarking a simple tool
 - [ ] More options: `-l`, `-w`, `-c` similar to `wc`

@@ -1,4 +1,5 @@
 use clap::AppSettings;
+use serde_json::json;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
@@ -15,6 +16,10 @@ struct Opt {
     /// Activate debug mode
     #[structopt(short, long)]
     debug: bool,
+
+    /// Select the output format
+    #[structopt(short, long, possible_values = &["text", "json"], default_value = "text")]
+    output: String,
 
     /// Files to process
     #[structopt(name = "FILE", parse(from_os_str))]
@@ -38,7 +43,19 @@ fn main() -> std::io::Result<()> {
         let lines = contents.lines().count();
         let words = contents.split_whitespace().count();
 
-        println!("{} {} {} {}", lines, words, chars, filename);
+        match opt.output.as_str() {
+            "json" => {
+                let json = json!({
+                    "lines": lines,
+                    "words": words,
+                    "chars": chars
+                });
+                println!("{}", json.to_string());
+            }
+            _ => {
+                println!("{} {} {} {}", lines, words, chars, filename);
+            }
+        }
     }
 
     Ok(())
