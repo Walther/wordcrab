@@ -16,3 +16,4 @@ It is intended as a cross-platform, modern replacement for `wc`.
 - [ ] Benchmark & write a blogpost about the process of benchmarking a simple tool
 - [ ] More options: `-l`, `-w`, `-c` similar to `wc`
 - [ ] Proper tests to ensure correctness, especially on tricky strings
+- [ ] Soft error handling; do not panic if a single file fails to be read of a long list
