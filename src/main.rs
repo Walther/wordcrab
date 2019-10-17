@@ -48,7 +48,8 @@ fn main() -> std::io::Result<()> {
                 let json = json!({
                     "lines": lines,
                     "words": words,
-                    "chars": chars
+                    "chars": chars,
+                    "filename": filename
                 });
                 println!("{}", json.to_string());
             }
