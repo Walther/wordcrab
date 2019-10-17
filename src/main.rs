@@ -1,28 +1,28 @@
-use clap::AppSettings;
+#[macro_use]
+extern crate clap;
 use serde_json::json;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
 use std::path::PathBuf;
-use structopt::StructOpt;
 
-#[derive(StructOpt, Debug)]
-#[structopt(
+#[derive(Clap, Debug)]
+#[clap(
     name = "wordcrab",
     about = "A command-line tool for counting lines, words and characters in documents.",
-    global_settings = &[AppSettings::ColoredHelp]
+    // global_settings = &[AppSettings::ColoredHelp]
 )]
 struct Opt {
     /// Activate debug mode
-    #[structopt(short, long)]
+    #[clap(short, long)]
     debug: bool,
 
     /// Select the output format
-    #[structopt(short, long, possible_values = &["text", "json"], default_value = "text")]
+    #[clap(short, long, possible_values = &["text", "json"], default_value = "text")]
     output: String,
 
     /// Files to process
-    #[structopt(name = "FILE", parse(from_os_str))]
+    #[clap(name = "FILE", parse(from_os_str))]
     files: Vec<PathBuf>,
 }
 
