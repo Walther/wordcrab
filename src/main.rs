@@ -14,11 +14,11 @@ use std::path::PathBuf;
 )]
 struct Opt {
     /// Activate debug mode
-    #[clap(short, long)]
+    #[clap(short = "d", long = "debug")]
     debug: bool,
 
     /// Select the output format
-    #[clap(short, long, possible_values = &["text", "json"], default_value = "text")]
+    #[clap(short = "o", long = "output", /* possible_values = &["text", "json"], */ default_value = "text")]
     output: String,
 
     /// Files to process
@@ -27,7 +27,7 @@ struct Opt {
 }
 
 fn main() -> std::io::Result<()> {
-    let opt = Opt::from_args();
+    let opt = Opt::parse();
     if opt.debug {
         println!("{:#?}", opt);
     }
