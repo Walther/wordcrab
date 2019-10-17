@@ -1,3 +1,4 @@
+use clap::AppSettings;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
@@ -5,7 +6,11 @@ use std::path::PathBuf;
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
-#[structopt(name = "basic")]
+#[structopt(
+    name = "wordcrab",
+    about = "A command-line tool for counting lines, words and characters in documents.",
+    global_settings = &[AppSettings::ColoredHelp]
+)]
 struct Opt {
     /// Activate debug mode
     #[structopt(short, long)]

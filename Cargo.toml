@@ -1,8 +1,13 @@
 [package]
 name = "wordcrab"
 version = "0.1.0"
-authors = ["Veeti Haapsamo <veeti.haapsamo@gmail.com>"]
+authors = ["Walther <veeti.haapsamo@gmail.com>"]
 edition = "2018"
+license = "MIT OR Apache-2.0"
+
+[badges]
+maintenance = { status = "experimental" }
 
 [dependencies]
 structopt = "0.3.3"
+clap = "2.33.0"
