@@ -7,7 +7,7 @@ It is intended as a cross-platform, modern replacement for `wc`.
 ## Goals
 
 - [x] MVP version that counts lines, words and characters
-- [ ] Publish on <crates.io>
+- [x] Publish on <crates.io>
 - [ ] Publish on homebrew
 - [ ] Publish on other platforms, which?
 - [ ] Write a blogpost about the process of making this; as a showcase of creating and publishing a tool
