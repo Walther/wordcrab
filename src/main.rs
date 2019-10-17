@@ -22,8 +22,9 @@ fn main() -> std::io::Result<()> {
         println!("{:#?}", opt);
     }
 
-    for file in opt.files {
-        let file = File::open(file)?;
+    for path in opt.files {
+        let filename = path.to_str().unwrap();
+        let file = File::open(filename)?;
         let mut buf_reader = BufReader::new(file);
         let mut contents = String::new();
         buf_reader.read_to_string(&mut contents)?;
@@ -32,7 +33,7 @@ fn main() -> std::io::Result<()> {
         let lines = contents.lines().count();
         let words = contents.split_whitespace().count();
 
-        println!("{} lines {} words {} chars", lines, words, chars);
+        println!("{} {} {} {}", lines, words, chars, filename);
     }
 
     Ok(())
