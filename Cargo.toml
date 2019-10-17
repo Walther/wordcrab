@@ -6,6 +6,8 @@ edition = "2018"
 license = "MIT OR Apache-2.0"
 description = "A command-line tool for counting lines, words and characters in documents."
 repository = "https://github.com/Walther/wordcrab"
+categories = ["command-line-utilities"]
+readme = "README.md"
 
 [badges]
 maintenance = { status = "experimental" }
