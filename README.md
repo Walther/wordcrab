@@ -15,3 +15,4 @@ It is intended as a cross-platform, modern replacement for `wc`.
 - [ ] Concurrency
 - [ ] Benchmark & write a blogpost about the process of benchmarking a simple tool
 - [ ] More options: `-l`, `-w`, `-c` similar to `wc`
+- [ ] Proper tests to ensure correctness, especially on tricky strings
