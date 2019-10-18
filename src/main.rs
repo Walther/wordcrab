@@ -1,10 +1,10 @@
 use clap::AppSettings;
 use serde_json::json;
-use std::fs::File;
-use std::io::prelude::*;
-use std::io::BufReader;
 use std::path::PathBuf;
 use structopt::StructOpt;
+
+pub mod wordcrab;
+use wordcrab::analyse_file;
 
 #[derive(StructOpt, Debug)]
 #[structopt(
@@ -34,28 +34,37 @@ fn main() -> std::io::Result<()> {
 
     for path in opt.files {
         let filename = path.to_str().unwrap();
-        let file = File::open(filename)?;
-        let mut buf_reader = BufReader::new(file);
-        let mut contents = String::new();
-        buf_reader.read_to_string(&mut contents)?;
 
-        let chars = contents.chars().count();
-        let lines = contents.lines().count();
-        let words = contents.split_whitespace().count();
-
-        match opt.output.as_str() {
-            "json" => {
-                let json = json!({
-                    "lines": lines,
-                    "words": words,
-                    "chars": chars,
-                    "filename": filename
-                });
-                println!("{}", json.to_string());
-            }
-            _ => {
-                println!("{} {} {} {}", lines, words, chars, filename);
-            }
+        match analyse_file(&filename) {
+            Ok(file_stats) => match opt.output.as_str() {
+                "json" => {
+                    let json = json!({
+                        "lines": file_stats.lines,
+                        "words": file_stats.words,
+                        "chars": file_stats.chars,
+                        "filename": file_stats.filename
+                    });
+                    println!("{}", json.to_string());
+                }
+                _ => {
+                    println!(
+                        "{} {} {} {}",
+                        file_stats.lines, file_stats.words, file_stats.chars, file_stats.filename
+                    );
+                }
+            },
+            Err(error) => match opt.output.as_str() {
+                "json" => {
+                    let json = json!({
+                        "filename": filename,
+                        "error": error.to_string()
+                    });
+                    println!("{}", json.to_string());
+                }
+                _ => {
+                    println!("{} {}", error.to_string(), filename);
+                }
+            },
         }
     }
 
