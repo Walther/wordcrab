@@ -1,4 +1,5 @@
 use clap::AppSettings;
+use rayon::prelude::*;
 use serde_json::json;
 use std::path::PathBuf;
 use structopt::StructOpt;
@@ -32,7 +33,7 @@ fn main() -> std::io::Result<()> {
         println!("{:#?}", opt);
     }
 
-    for path in opt.files {
+    opt.files.par_iter().for_each(|path| {
         let filename = path.to_str().unwrap();
 
         match analyse_file(&filename) {
@@ -55,7 +56,6 @@ fn main() -> std::io::Result<()> {
                 }
             },
         }
-    }
-
+    });
     Ok(())
 }
