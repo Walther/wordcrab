@@ -38,31 +38,20 @@ fn main() -> std::io::Result<()> {
         match analyse_file(&filename) {
             Ok(file_stats) => match opt.output.as_str() {
                 "json" => {
-                    let json = json!({
-                        "lines": file_stats.lines,
-                        "words": file_stats.words,
-                        "chars": file_stats.chars,
-                        "filename": file_stats.filename
-                    });
-                    println!("{}", json.to_string());
+                    let json = json!(file_stats);
+                    println!("{}", json);
                 }
                 _ => {
-                    println!(
-                        "{} {} {} {}",
-                        file_stats.lines, file_stats.words, file_stats.chars, file_stats.filename
-                    );
+                    println!("{}", file_stats);
                 }
             },
             Err(error) => match opt.output.as_str() {
                 "json" => {
-                    let json = json!({
-                        "filename": filename,
-                        "error": error.to_string()
-                    });
-                    println!("{}", json.to_string());
+                    let json = json!(error);
+                    println!("{}", json);
                 }
                 _ => {
-                    println!("{} {}", error.to_string(), filename);
+                    println!("{}", error);
                 }
             },
         }

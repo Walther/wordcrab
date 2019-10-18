@@ -1,6 +1,6 @@
 [package]
 name = "wordcrab"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Walther <veeti.haapsamo@gmail.com>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
@@ -16,4 +16,5 @@ maintenance = { status = "experimental" }
 structopt = "0.3.3"
 clap = "2.33.0"
 serde = "1.0.101"
+serde_derive = "1.0.101"
 serde_json = "1.0.41"

@@ -1,8 +1,12 @@
+use serde_derive::Serialize;
+use std::fmt;
+
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::BufReader;
 
 /// Structure representing the results of a file analysis.
+#[derive(Serialize)]
 pub struct FileStats {
   /// String representation of the filename given as the input, including possible relative path
   pub filename: String,
@@ -14,21 +18,62 @@ pub struct FileStats {
   pub chars: usize,
 }
 
-/// Runs a file analysis on the given filename path. Returns a FileStats structure representing the results, or an IO Error.
-pub fn analyse_file(filename: &str) -> Result<FileStats, std::io::Error> {
-  let file = File::open(filename)?;
+impl fmt::Display for FileStats {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(
+      f,
+      "{} {} {} {}",
+      self.lines, self.words, self.chars, self.filename
+    )
+  }
+}
+
+/// Structure representing an error result of a file analysis.
+#[derive(Serialize)]
+pub struct FileStatsError {
+  /// String representation of the filename given as the input, including possible relative path
+  pub filename: String,
+  /// Error message. TODO: keep `std::io::Error` here, and somehow derive the to_string?
+  pub error: String,
+}
+
+impl fmt::Display for FileStatsError {
+  fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    write!(f, "{} {}", self.error, self.filename)
+  }
+}
+
+/// Runs a file analysis on the given filename path. Returns a FileStats structure representing the results, or a FileStatsError containing the filename and the error.
+pub fn analyse_file(filename: &str) -> Result<FileStats, FileStatsError> {
+  let file = match File::open(filename) {
+    Ok(file) => file,
+    Err(e) => {
+      return Err(FileStatsError {
+        filename: filename.to_string(),
+        error: e.to_string(),
+      })
+    }
+  };
   let mut buf_reader = BufReader::new(file);
   let mut contents = String::new();
-  buf_reader.read_to_string(&mut contents)?;
+  match buf_reader.read_to_string(&mut contents) {
+    Ok(_bytes) => {
+      let chars = contents.chars().count();
+      let lines = contents.lines().count();
+      let words = contents.split_whitespace().count();
 
-  let chars = contents.chars().count();
-  let lines = contents.lines().count();
-  let words = contents.split_whitespace().count();
-
-  Ok(FileStats {
-    filename: filename.to_string(),
-    lines,
-    words,
-    chars,
-  })
+      Ok(FileStats {
+        filename: filename.to_string(),
+        lines,
+        words,
+        chars,
+      })
+    }
+    Err(e) => {
+      return Err(FileStatsError {
+        filename: filename.to_string(),
+        error: e.to_string(),
+      })
+    }
+  }
 }
