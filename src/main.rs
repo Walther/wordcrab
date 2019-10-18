@@ -1,6 +1,7 @@
 use clap::AppSettings;
 use rayon::prelude::*;
 use serde_json::json;
+use serde_yaml;
 use std::path::PathBuf;
 use structopt::StructOpt;
 
@@ -19,7 +20,7 @@ struct Opt {
     debug: bool,
 
     /// Select the output format
-    #[structopt(short, long, possible_values = &["text", "json"], default_value = "text")]
+    #[structopt(short, long, possible_values = &["text", "json", "yaml"], default_value = "text")]
     output: String,
 
     /// Files to process
@@ -41,6 +42,7 @@ fn main() -> std::io::Result<()> {
             let filename = path.to_str().unwrap();
             println!("{}", analyse_file(&filename));
         }),
+        // TODO: generalize / refactor some of this out
         "json" => {
             let results: Vec<FileStatsOutput> = opt
                 .files
@@ -51,6 +53,20 @@ fn main() -> std::io::Result<()> {
                 })
                 .collect();
             println!("{}", json!(results))
+        }
+        "yaml" => {
+            let results: Vec<FileStatsOutput> = opt
+                .files
+                .par_iter()
+                .map(|path| {
+                    let filename = path.to_str().unwrap();
+                    analyse_file(&filename)
+                })
+                .collect();
+            match serde_yaml::to_string(&results) {
+                Ok(yaml) => println!("{}", yaml),
+                Err(e) => panic!("{}", e),
+            }
         }
         _ => unreachable!(), // structopt has explicit list of possible_values and a default_value
     }
