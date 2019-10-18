@@ -24,7 +24,6 @@ _TODO: installers in various OS package managers._
 - [x] Concurrency with `rayon`
 - [ ] Benchmark & write a blogpost about the process of benchmarking a simple tool
 - [x] More options: `-l`, `-w`, `-c` similar to `wc`
-  - [ ] Investigate significant slowdown caused by adding support to these
 - [ ] Testing
   - [x] Tiny initial tests
   - [x] Lots of tests to ensure correctness of various functions
