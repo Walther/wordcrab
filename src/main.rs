@@ -6,8 +6,8 @@ use serde_yaml;
 use std::path::PathBuf;
 use structopt::StructOpt;
 
-pub mod wordcrab;
-use wordcrab::{analyse_file, FileStatsOutput};
+pub mod lib;
+use lib::{analyse_file, analyse_files};
 
 #[derive(StructOpt, Debug)]
 #[structopt(
@@ -35,21 +35,24 @@ fn main() -> std::io::Result<()> {
         println!("{:#?}", opt);
     }
     let files = opt.files;
+    let filenames: Vec<&str> = files
+        .par_iter()
+        .map(|path| path.to_str().unwrap()) // FIXME: don't panic?
+        .collect();
 
     // If output format is text, we can stream-print as we go.
     // If output format is specified to any other format, we'll collect values first
     // in order to output a correct file
     match opt.output.as_str() {
-        "text" => files.par_iter().for_each(|path| {
-            let filename = path.to_str().unwrap();
-            println!("{}", analyse_file(&filename));
+        "text" => filenames.par_iter().for_each(|filename| {
+            println!("{}", analyse_file(&filename.to_string()));
         }),
         "json" => {
-            let results = analyse_collect(&files);
+            let results = analyse_files(&filenames);
             println!("{}", json!(results))
         }
         "yaml" => {
-            let results = analyse_collect(&files);
+            let results = analyse_files(&filenames);
             match serde_yaml::to_string(&results) {
                 Ok(yaml) => println!("{}", yaml),
                 Err(e) => panic!("{}", e),
@@ -58,14 +61,4 @@ fn main() -> std::io::Result<()> {
         _ => unreachable!(), // structopt has explicit list of possible_values and a default_value
     }
     Ok(())
-}
-
-fn analyse_collect(files: &[std::path::PathBuf]) -> Vec<FileStatsOutput> {
-    files
-        .par_iter()
-        .map(|path| {
-            let filename = path.to_str().unwrap();
-            analyse_file(&filename)
-        })
-        .collect()
 }
