@@ -17,4 +17,5 @@ It is intended as a cross-platform, modern replacement for `wc`.
 - [ ] More options: `-l`, `-w`, `-c` similar to `wc`
 - [ ] Proper tests to ensure correctness, especially on tricky strings
 - [x] Soft error handling; do not panic if a single file fails to be read of a long list
+- [ ] Serialization error handling; currently panics. How to type `main()` and return errors?
 - [ ] Async-std port, when async/await lands in stable?
