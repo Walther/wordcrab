@@ -7,18 +7,40 @@ use std::path::PathBuf;
 use structopt::StructOpt;
 
 pub mod lib;
-use lib::{analyse_file, analyse_files};
+use lib::{analyse_file, analyse_files, AnalysisOptions};
 
 #[derive(StructOpt, Debug)]
 #[structopt(
     name = "wordcrab",
-    about = "A command-line tool for counting lines, words and characters in documents.",
+    about = "A command-line tool for counting lines, words and characters in documents.
+
+It is a modern, cross-platform replacement for wc(1).
+
+When analysis options (any combination of -l, -w, -c) are specified, wordcrab only analyses and reports the information requested. The order of output is always line, word, chars, filename. By default, -lwc is assumed.
+
+Multiple output formats are supported in addition to the standard text output.
+",
     global_settings = &[AppSettings::ColoredHelp]
 )]
 struct Opt {
     /// Activate debug mode
     #[structopt(short, long)]
     debug: bool,
+
+    /// Count the number of lines.
+    /// Based on \n and \r\n
+    #[structopt(short, long)]
+    lines: bool,
+
+    /// Count the number of words.
+    /// Based on the Unicode Derived Core Property White_Space
+    #[structopt(short, long)]
+    words: bool,
+
+    /// Count the number of chars.
+    /// Based on the Unicode Scalar Value
+    #[structopt(short, long)]
+    chars: bool,
 
     /// Select the output format
     #[structopt(short, long, possible_values = &["text", "json", "yaml"], default_value = "text")]
@@ -30,10 +52,29 @@ struct Opt {
 }
 
 fn main() -> std::io::Result<()> {
-    let opt = Opt::from_args();
+    let mut opt = Opt::from_args();
     if opt.debug {
+        println!("raw opts:");
         println!("{:#?}", opt);
     }
+
+    // If none of the analysis options are specified, count and report all of them.
+    // Otherwise, only the specified ones.
+    if !opt.lines && !opt.words && !opt.chars {
+        opt.lines = true;
+        opt.words = true;
+        opt.chars = true;
+    };
+    let analysis_options = AnalysisOptions {
+        lines: opt.lines,
+        words: opt.words,
+        chars: opt.chars,
+    };
+    if opt.debug {
+        println!("parsed analysis options:");
+        println!("{:#?}", analysis_options);
+    }
+
     let files = opt.files;
     let filenames: Vec<&str> = files
         .par_iter()
@@ -45,14 +86,14 @@ fn main() -> std::io::Result<()> {
     // in order to output a correct file
     match opt.output.as_str() {
         "text" => filenames.par_iter().for_each(|filename| {
-            println!("{}", analyse_file(&filename.to_string()));
+            println!("{}", analyse_file(&filename, analysis_options));
         }),
         "json" => {
-            let results = analyse_files(&filenames);
+            let results = analyse_files(&filenames, analysis_options);
             println!("{}", json!(results))
         }
         "yaml" => {
-            let results = analyse_files(&filenames);
+            let results = analyse_files(&filenames, analysis_options);
             match serde_yaml::to_string(&results) {
                 Ok(yaml) => println!("{}", yaml),
                 Err(e) => panic!("{}", e),

@@ -14,7 +14,7 @@ It is intended as a cross-platform, modern replacement for `wc`.
 - [x] Optional JSON output format
 - [x] Concurrency with `rayon`
 - [ ] Benchmark & write a blogpost about the process of benchmarking a simple tool
-- [ ] More options: `-l`, `-w`, `-c` similar to `wc`
+- [x] More options: `-l`, `-w`, `-c` similar to `wc`
 - [ ] Testing
   - [x] Tiny initial tests
   - [ ] Proper tests to ensure correctness, especially on tricky strings

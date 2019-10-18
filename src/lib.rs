@@ -10,18 +10,40 @@ use rayon::prelude::*;
 /// Structure representing the results of a file analysis.
 #[derive(Serialize)]
 pub struct FileStats {
-  /// Number of lines in the file
-  pub lines: usize,
-  /// Number of words in the file. TODO: this needs to be strictly defined!
-  pub words: usize,
-  /// Number of characters in the file. TODO: this needs to be strictly defined!
-  pub chars: usize,
+  /// Number of lines in the file. Based on \n and \r\n
+  pub lines: Option<usize>,
+  /// Number of words in the file. Based on the Unicode Derived Core Property White_Space
+  pub words: Option<usize>,
+  /// Number of characters in the file. Based on the Unicode Scalar Value
+  pub chars: Option<usize>,
 }
 
 impl fmt::Display for FileStats {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    write!(f, "{} {} {}", self.lines, self.words, self.chars)
+    write!(
+      f,
+      "{}{}{}",
+      match self.lines {
+        Some(lines) => format!("{} ", lines),
+        None => String::new(),
+      },
+      match self.words {
+        Some(words) => format!("{} ", words),
+        None => String::new(),
+      },
+      match self.chars {
+        Some(chars) => format!("{} ", chars),
+        None => String::new(),
+      },
+    )
   }
+}
+
+#[derive(Copy, Clone, Debug)]
+pub struct AnalysisOptions {
+  pub lines: bool,
+  pub words: bool,
+  pub chars: bool,
 }
 
 #[derive(Serialize)]
@@ -35,33 +57,37 @@ pub enum NamedOutput {
 impl fmt::Display for NamedOutput {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match &*self {
-      NamedOutput::Success { filename, stats } => write!(
-        f,
-        "{} {} {} {}",
-        stats.lines, stats.words, stats.chars, filename
-      ),
-      NamedOutput::Error { filename, error } => write!(f, "{} {}", error, filename),
+      NamedOutput::Success { filename, stats } => write!(f, "{}{}", stats, filename),
+      NamedOutput::Error { filename, error } => write!(f, "{}{}", error, filename),
     }
   }
 }
 
 /// Analyse a single string, returning FileStats
-pub fn analyse_string(contents: &str) -> FileStats {
-  let chars = contents.chars().count();
-  let lines = contents.lines().count();
-  let words = contents.split_whitespace().count();
-
+pub fn analyse_string(contents: &str, options: AnalysisOptions) -> FileStats {
   FileStats {
-    lines,
-    words,
-    chars,
+    lines: if options.lines {
+      Some(contents.lines().count())
+    } else {
+      None
+    },
+    words: if options.words {
+      Some(contents.split_whitespace().count())
+    } else {
+      None
+    },
+    chars: if options.chars {
+      Some(contents.chars().count())
+    } else {
+      None
+    },
   }
 }
 
 /// Runs a file analysis on the given filename path.
 /// Returns a NamedOutput structure, with the filename and
 /// either results or error
-pub fn analyse_file(filename: &str) -> NamedOutput {
+pub fn analyse_file(filename: &str, options: AnalysisOptions) -> NamedOutput {
   let file = match File::open(filename) {
     Err(e) => {
       return NamedOutput::Error {
@@ -77,7 +103,7 @@ pub fn analyse_file(filename: &str) -> NamedOutput {
   match buf_reader.read_to_string(&mut contents) {
     Ok(_bytes) => NamedOutput::Success {
       filename: filename.to_string(),
-      stats: analyse_string(&contents),
+      stats: analyse_string(&contents, options),
     },
     Err(e) => NamedOutput::Error {
       filename: filename.to_string(),
@@ -89,9 +115,9 @@ pub fn analyse_file(filename: &str) -> NamedOutput {
 /// Runs a file analysis on the given list of path buffers.
 /// Returns a NamedOutput structure, with the filename and
 /// either results or error
-pub fn analyse_files(filenames: &[&str]) -> Vec<NamedOutput> {
+pub fn analyse_files(filenames: &[&str], options: AnalysisOptions) -> Vec<NamedOutput> {
   filenames
     .par_iter()
-    .map(|filename| analyse_file(filename))
+    .map(|filename| analyse_file(filename, options))
     .collect()
 }
