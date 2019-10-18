@@ -4,6 +4,15 @@
 
 It is intended as a cross-platform, modern replacement for `wc`.
 
+## Installation
+
+- Make sure you have `rustup` and `cargo` installed: `curl https://sh.rustup.rs -sSf | sh`
+- `cargo install wordcrab`
+- Upgrading: `cargo install wordcrab --force`
+- Uninstalling: `cargo remove wordcrab`
+
+_TODO: installers in various OS package managers._
+
 ## Goals
 
 - [x] MVP version that counts lines, words and characters
@@ -15,6 +24,7 @@ It is intended as a cross-platform, modern replacement for `wc`.
 - [x] Concurrency with `rayon`
 - [ ] Benchmark & write a blogpost about the process of benchmarking a simple tool
 - [x] More options: `-l`, `-w`, `-c` similar to `wc`
+  - [ ] Investigate significant slowdown caused by adding support to these
 - [ ] Testing
   - [x] Tiny initial tests
   - [x] Lots of tests to ensure correctness of various functions
