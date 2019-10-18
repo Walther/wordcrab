@@ -5,7 +5,7 @@ use std::path::PathBuf;
 use structopt::StructOpt;
 
 pub mod wordcrab;
-use wordcrab::analyse_file;
+use wordcrab::{analyse_file, FileStatsOutput};
 
 #[derive(StructOpt, Debug)]
 #[structopt(
@@ -33,29 +33,26 @@ fn main() -> std::io::Result<()> {
         println!("{:#?}", opt);
     }
 
-    opt.files.par_iter().for_each(|path| {
-        let filename = path.to_str().unwrap();
-
-        match analyse_file(&filename) {
-            Ok(file_stats) => match opt.output.as_str() {
-                "json" => {
-                    let json = json!(file_stats);
-                    println!("{}", json);
-                }
-                _ => {
-                    println!("{}", file_stats);
-                }
-            },
-            Err(error) => match opt.output.as_str() {
-                "json" => {
-                    let json = json!(error);
-                    println!("{}", json);
-                }
-                _ => {
-                    println!("{}", error);
-                }
-            },
+    // If output format is text, we can stream-print as we go.
+    // If output format is specified to any other format, we'll collect values first
+    // in order to output a correct file
+    match opt.output.as_str() {
+        "text" => opt.files.par_iter().for_each(|path| {
+            let filename = path.to_str().unwrap();
+            println!("{}", analyse_file(&filename));
+        }),
+        "json" => {
+            let results: Vec<FileStatsOutput> = opt
+                .files
+                .par_iter()
+                .map(|path| {
+                    let filename = path.to_str().unwrap();
+                    analyse_file(&filename)
+                })
+                .collect();
+            println!("{}", json!(results))
         }
-    });
+        _ => unreachable!(), // structopt has explicit list of possible_values and a default_value
+    }
     Ok(())
 }

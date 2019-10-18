@@ -43,15 +43,34 @@ impl fmt::Display for FileStatsError {
   }
 }
 
-/// Runs a file analysis on the given filename path. Returns a FileStats structure representing the results, or a FileStatsError containing the filename and the error.
-pub fn analyse_file(filename: &str) -> Result<FileStats, FileStatsError> {
+#[derive(Serialize)]
+#[serde(untagged)]
+// Enum that can either be a FileStats or a FileStatsError
+pub enum FileStatsOutput {
+  Success(FileStats),
+  Error(FileStatsError),
+}
+
+impl fmt::Display for FileStatsOutput {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    match &*self {
+      FileStatsOutput::Success(file_stats) => FileStats::fmt(&file_stats, f),
+      FileStatsOutput::Error(file_stats_error) => FileStatsError::fmt(&file_stats_error, f),
+    }
+  }
+}
+
+/// Runs a file analysis on the given filename path.
+/// Returns a FileStats structure representing the results,
+/// or a FileStatsError containing the filename and the error.
+pub fn analyse_file(filename: &str) -> FileStatsOutput {
   let file = match File::open(filename) {
     Ok(file) => file,
     Err(e) => {
-      return Err(FileStatsError {
+      return FileStatsOutput::Error(FileStatsError {
         filename: filename.to_string(),
         error: e.to_string(),
-      })
+      });
     }
   };
   let mut buf_reader = BufReader::new(file);
@@ -62,7 +81,7 @@ pub fn analyse_file(filename: &str) -> Result<FileStats, FileStatsError> {
       let lines = contents.lines().count();
       let words = contents.split_whitespace().count();
 
-      Ok(FileStats {
+      FileStatsOutput::Success(FileStats {
         filename: filename.to_string(),
         lines,
         words,
@@ -70,7 +89,7 @@ pub fn analyse_file(filename: &str) -> Result<FileStats, FileStatsError> {
       })
     }
     Err(e) => {
-      return Err(FileStatsError {
+      return FileStatsOutput::Error(FileStatsError {
         filename: filename.to_string(),
         error: e.to_string(),
       })
