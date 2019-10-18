@@ -1,3 +1,4 @@
+#![deny(clippy::all)]
 use clap::AppSettings;
 use rayon::prelude::*;
 use serde_json::json;
@@ -59,7 +60,7 @@ fn main() -> std::io::Result<()> {
     Ok(())
 }
 
-fn analyse_collect(files: &Vec<std::path::PathBuf>) -> Vec<FileStatsOutput> {
+fn analyse_collect(files: &[std::path::PathBuf]) -> Vec<FileStatsOutput> {
     files
         .par_iter()
         .map(|path| {

@@ -88,11 +88,9 @@ pub fn analyse_file(filename: &str) -> FileStatsOutput {
         chars,
       })
     }
-    Err(e) => {
-      return FileStatsOutput::Error(FileStatsError {
-        filename: filename.to_string(),
-        error: e.to_string(),
-      })
-    }
+    Err(e) => FileStatsOutput::Error(FileStatsError {
+      filename: filename.to_string(),
+      error: e.to_string(),
+    }),
   }
 }
