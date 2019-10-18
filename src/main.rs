@@ -33,36 +33,22 @@ fn main() -> std::io::Result<()> {
     if opt.debug {
         println!("{:#?}", opt);
     }
+    let files = opt.files;
 
     // If output format is text, we can stream-print as we go.
     // If output format is specified to any other format, we'll collect values first
     // in order to output a correct file
     match opt.output.as_str() {
-        "text" => opt.files.par_iter().for_each(|path| {
+        "text" => files.par_iter().for_each(|path| {
             let filename = path.to_str().unwrap();
             println!("{}", analyse_file(&filename));
         }),
-        // TODO: generalize / refactor some of this out
         "json" => {
-            let results: Vec<FileStatsOutput> = opt
-                .files
-                .par_iter()
-                .map(|path| {
-                    let filename = path.to_str().unwrap();
-                    analyse_file(&filename)
-                })
-                .collect();
+            let results = analyse_collect(&files);
             println!("{}", json!(results))
         }
         "yaml" => {
-            let results: Vec<FileStatsOutput> = opt
-                .files
-                .par_iter()
-                .map(|path| {
-                    let filename = path.to_str().unwrap();
-                    analyse_file(&filename)
-                })
-                .collect();
+            let results = analyse_collect(&files);
             match serde_yaml::to_string(&results) {
                 Ok(yaml) => println!("{}", yaml),
                 Err(e) => panic!("{}", e),
@@ -71,4 +57,14 @@ fn main() -> std::io::Result<()> {
         _ => unreachable!(), // structopt has explicit list of possible_values and a default_value
     }
     Ok(())
+}
+
+fn analyse_collect(files: &Vec<std::path::PathBuf>) -> Vec<FileStatsOutput> {
+    files
+        .par_iter()
+        .map(|path| {
+            let filename = path.to_str().unwrap();
+            analyse_file(&filename)
+        })
+        .collect()
 }
