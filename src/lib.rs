@@ -20,6 +20,9 @@ pub struct FileStats {
 
 impl fmt::Display for FileStats {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+    // NOTE: intentional spacing here.
+    // Always at least one is reported
+    // Last one includes a space too, so removing one from filename print
     write!(
       f,
       "{}{}{}",
@@ -57,8 +60,9 @@ pub enum NamedOutput {
 impl fmt::Display for NamedOutput {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match &*self {
+      // NOTE: intentional spacing here, as stats leave a trailing space
       NamedOutput::Success { filename, stats } => write!(f, "{}{}", stats, filename),
-      NamedOutput::Error { filename, error } => write!(f, "{}{}", error, filename),
+      NamedOutput::Error { filename, error } => write!(f, "{} {}", error, filename),
     }
   }
 }

@@ -17,7 +17,9 @@ It is intended as a cross-platform, modern replacement for `wc`.
 - [x] More options: `-l`, `-w`, `-c` similar to `wc`
 - [ ] Testing
   - [x] Tiny initial tests
-  - [ ] Proper tests to ensure correctness, especially on tricky strings
+  - [x] Lots of tests to ensure correctness of various functions
+  - [ ] Test output formatting
+  - [ ] Test tricky strings
   - [ ] Full code coverage
 - [x] Soft error handling; do not panic if a single file fails to be read of a long list
 - [ ] Serialization error handling; currently panics. How to type `main()` and return errors?
