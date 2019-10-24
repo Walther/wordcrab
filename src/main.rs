@@ -86,20 +86,26 @@ fn main() -> std::io::Result<()> {
     // in order to output a correct file
     match opt.output.as_str() {
         "text" => filenames.par_iter().for_each(|filename| {
-            println!("{}", analyse_file(&filename, analysis_options));
+            async {
+                println!("{}", analyse_file(&filename, analysis_options).await);
+            };
         }),
         "json" => {
-            let results = analyse_files(&filenames, analysis_options);
-            println!("{}", json!(results))
+            async {
+                let results = analyse_files(&filenames, analysis_options).await;
+                println!("{}", json!(results))
+            };
         }
         "yaml" => {
-            let results = analyse_files(&filenames, analysis_options);
-            match serde_yaml::to_string(&results) {
-                Ok(yaml) => println!("{}", yaml),
-                Err(e) => panic!("{}", e),
-            }
+            async {
+                let results = analyse_files(&filenames, analysis_options).await;
+                match serde_yaml::to_string(&results) {
+                    Ok(yaml) => println!("{}", yaml),
+                    Err(e) => panic!("{}", e),
+                }
+            };
         }
         _ => unreachable!(), // structopt has explicit list of possible_values and a default_value
-    }
+    };
     Ok(())
 }

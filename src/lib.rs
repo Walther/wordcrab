@@ -1,9 +1,9 @@
+use async_std::fs::File;
+use async_std::io::prelude::*;
+use async_std::io::BufReader;
+use futures::future::join_all;
 use serde_derive::Serialize;
 use std::fmt;
-
-use std::fs::File;
-use std::io::prelude::*;
-use std::io::BufReader;
 
 use rayon::prelude::*;
 
@@ -91,8 +91,8 @@ pub fn analyse_string(contents: &str, options: AnalysisOptions) -> FileStats {
 /// Runs a file analysis on the given filename path.
 /// Returns a NamedOutput structure, with the filename and
 /// either results or error
-pub fn analyse_file(filename: &str, options: AnalysisOptions) -> NamedOutput {
-  let file = match File::open(filename) {
+pub async fn analyse_file(filename: &str, options: AnalysisOptions) -> NamedOutput {
+  let file = match File::open(filename).await {
     Err(e) => {
       return NamedOutput::Error {
         filename: filename.to_string(),
@@ -104,7 +104,7 @@ pub fn analyse_file(filename: &str, options: AnalysisOptions) -> NamedOutput {
 
   let mut buf_reader = BufReader::new(file);
   let mut contents = String::new();
-  match buf_reader.read_to_string(&mut contents) {
+  match buf_reader.read_to_string(&mut contents).await {
     Ok(_bytes) => NamedOutput::Success {
       filename: filename.to_string(),
       stats: analyse_string(&contents, options),
@@ -119,9 +119,11 @@ pub fn analyse_file(filename: &str, options: AnalysisOptions) -> NamedOutput {
 /// Runs a file analysis on the given list of path buffers.
 /// Returns a NamedOutput structure, with the filename and
 /// either results or error
-pub fn analyse_files(filenames: &[&str], options: AnalysisOptions) -> Vec<NamedOutput> {
-  filenames
-    .par_iter()
-    .map(|filename| analyse_file(filename, options))
-    .collect()
+pub async fn analyse_files(filenames: &[&str], options: AnalysisOptions) -> Vec<NamedOutput> {
+  join_all(
+    filenames
+      .par_iter()
+      .map(|filename| async { analyse_file(filename, options).await })
+      .collect(),
+  )
 }
