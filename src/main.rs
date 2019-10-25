@@ -1,6 +1,7 @@
 #![deny(clippy::all)]
 use async_std::task;
 use clap::AppSettings;
+use futures::future::join_all;
 use serde_json::json;
 use serde_yaml;
 use std::path::PathBuf;
@@ -87,11 +88,11 @@ fn main() -> std::io::Result<()> {
     //
     // TODO: this block is an ugly mess. How to clean up?
     match opt.output.as_str() {
-        "text" => filenames.iter().for_each(|filename| {
-            task::block_on(async {
-                println!("{}", analyse_file(&filename, analysis_options).await);
-            });
-        }),
+        "text" => {
+            task::block_on(join_all(filenames.iter().map(|filename| {
+                async move { println!("{}", analyse_file(&filename, analysis_options).await) }
+            })));
+        }
         "json" => {
             task::block_on(async {
                 let results = analyse_files(&filenames, analysis_options).await;
