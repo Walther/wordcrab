@@ -1,6 +1,5 @@
 #![deny(clippy::all)]
 use clap::AppSettings;
-use rayon::prelude::*;
 use serde_json::json;
 use serde_yaml;
 use std::path::PathBuf;
@@ -77,7 +76,7 @@ fn main() -> std::io::Result<()> {
 
     let files = opt.files;
     let filenames: Vec<&str> = files
-        .par_iter()
+        .iter()
         .map(|path| path.to_str().unwrap()) // FIXME: don't panic?
         .collect();
 
@@ -85,7 +84,7 @@ fn main() -> std::io::Result<()> {
     // If output format is specified to any other format, we'll collect values first
     // in order to output a correct file
     match opt.output.as_str() {
-        "text" => filenames.par_iter().for_each(|filename| {
+        "text" => filenames.iter().for_each(|filename| {
             async {
                 println!("{}", analyse_file(&filename, analysis_options).await);
             };

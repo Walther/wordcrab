@@ -5,8 +5,6 @@ use futures::future::join_all;
 use serde_derive::Serialize;
 use std::fmt;
 
-use rayon::prelude::*;
-
 /// Structure representing the results of a file analysis.
 #[derive(Serialize)]
 pub struct FileStats {
@@ -120,10 +118,8 @@ pub async fn analyse_file(filename: &str, options: AnalysisOptions) -> NamedOutp
 /// Returns a NamedOutput structure, with the filename and
 /// either results or error
 pub async fn analyse_files(filenames: &[&str], options: AnalysisOptions) -> Vec<NamedOutput> {
-  join_all(
-    filenames
-      .par_iter()
-      .map(|filename| async { analyse_file(filename, options).await })
-      .collect(),
-  )
+  let iter = filenames
+    .iter()
+    .map(|filename| analyse_file(filename, options));
+  join_all(iter).await
 }
