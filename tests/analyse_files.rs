@@ -1,3 +1,5 @@
+use async_std::task;
+
 extern crate wordcrab;
 use wordcrab::NamedOutput::{Error, Success};
 use wordcrab::*;
@@ -12,7 +14,7 @@ fn multiple_empty_files() {
     "tests/content/empty_b.txt",
     "tests/content/empty_c.txt",
   ];
-  let results = analyse_files(&files, ANALYSIS_OPTIONS_LWC);
+  let results = task::block_on(async { analyse_files(&files, ANALYSIS_OPTIONS_LWC).await });
   for named_output in results {
     match named_output {
       Success { filename, stats } => {

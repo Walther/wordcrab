@@ -1,4 +1,5 @@
 #![deny(clippy::all)]
+use async_std::task;
 use clap::AppSettings;
 use serde_json::json;
 use serde_yaml;
@@ -74,8 +75,8 @@ fn main() -> std::io::Result<()> {
         println!("{:#?}", analysis_options);
     }
 
-    let files = opt.files;
-    let filenames: Vec<&str> = files
+    let filenames: Vec<&str> = opt
+        .files
         .iter()
         .map(|path| path.to_str().unwrap()) // FIXME: don't panic?
         .collect();
@@ -83,28 +84,30 @@ fn main() -> std::io::Result<()> {
     // If output format is text, we can stream-print as we go.
     // If output format is specified to any other format, we'll collect values first
     // in order to output a correct file
+    //
+    // TODO: this block is an ugly mess. How to clean up?
     match opt.output.as_str() {
         "text" => filenames.iter().for_each(|filename| {
-            async {
+            task::block_on(async {
                 println!("{}", analyse_file(&filename, analysis_options).await);
-            };
+            });
         }),
         "json" => {
-            async {
+            task::block_on(async {
                 let results = analyse_files(&filenames, analysis_options).await;
                 println!("{}", json!(results))
-            };
+            });
         }
         "yaml" => {
-            async {
+            task::block_on(async {
                 let results = analyse_files(&filenames, analysis_options).await;
                 match serde_yaml::to_string(&results) {
                     Ok(yaml) => println!("{}", yaml),
                     Err(e) => panic!("{}", e),
                 }
-            };
+            });
         }
         _ => unreachable!(), // structopt has explicit list of possible_values and a default_value
-    };
+    }
     Ok(())
 }

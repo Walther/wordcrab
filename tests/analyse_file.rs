@@ -1,3 +1,5 @@
+use async_std::task;
+
 extern crate wordcrab;
 use wordcrab::NamedOutput::{Error, Success};
 use wordcrab::*;
@@ -7,7 +9,9 @@ use analysis_options::*;
 
 #[test]
 fn long_file() {
-  let named_output = analyse_file("tests/content/seitseman_veljesta.txt", ANALYSIS_OPTIONS_LWC);
+  let named_output = task::block_on(async {
+    analyse_file("tests/content/seitseman_veljesta.txt", ANALYSIS_OPTIONS_LWC).await
+  });
   match named_output {
     Success { filename, stats } => {
       println!("{}", filename);

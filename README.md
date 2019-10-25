@@ -21,7 +21,8 @@ _TODO: installers in various OS package managers._
 - [ ] Publish on other platforms, which?
 - [ ] Write a blogpost about the process of making this; as a showcase of creating and publishing a tool
 - [x] Optional JSON output format
-- [x] Concurrency with `rayon`
+- [x] ~~Initial concurrency with `rayon`~~
+- [x] Replace rayon with async-std port
 - [ ] Benchmark & write a blogpost about the process of benchmarking a simple tool
 - [x] More options: `-l`, `-w`, `-c` similar to `wc`
 - [ ] Testing
@@ -32,5 +33,4 @@ _TODO: installers in various OS package managers._
   - [ ] Full code coverage
 - [x] Soft error handling; do not panic if a single file fails to be read of a long list
 - [ ] Serialization error handling; currently panics. How to type `main()` and return errors?
-- [ ] Async-std port, when async/await lands in stable?
 - [ ] CI builds

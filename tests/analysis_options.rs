@@ -1,3 +1,5 @@
+use async_std::task;
+
 extern crate wordcrab;
 use wordcrab::NamedOutput::Error;
 use wordcrab::NamedOutput::Success;
@@ -47,7 +49,9 @@ pub static ANALYSIS_OPTIONS_WC: AnalysisOptions = AnalysisOptions {
 
 #[test]
 fn analysis_options_all() {
-  let named_output = analyse_file("tests/content/seitseman_veljesta.txt", ANALYSIS_OPTIONS_LWC);
+  let named_output = task::block_on(async {
+    analyse_file("tests/content/seitseman_veljesta.txt", ANALYSIS_OPTIONS_LWC).await
+  });
   match named_output {
     Success { filename, stats } => {
       println!("{}", filename);
@@ -63,7 +67,9 @@ fn analysis_options_all() {
 
 #[test]
 fn analysis_options_l() {
-  let named_output = analyse_file("tests/content/seitseman_veljesta.txt", ANALYSIS_OPTIONS_L);
+  let named_output = task::block_on(async {
+    analyse_file("tests/content/seitseman_veljesta.txt", ANALYSIS_OPTIONS_L).await
+  });
   match named_output {
     Success { filename, stats } => {
       println!("{}", filename);
@@ -79,7 +85,9 @@ fn analysis_options_l() {
 
 #[test]
 fn analysis_options_w() {
-  let named_output = analyse_file("tests/content/seitseman_veljesta.txt", ANALYSIS_OPTIONS_W);
+  let named_output = task::block_on(async {
+    analyse_file("tests/content/seitseman_veljesta.txt", ANALYSIS_OPTIONS_W).await
+  });
   match named_output {
     Success { filename, stats } => {
       println!("{}", filename);
@@ -95,7 +103,9 @@ fn analysis_options_w() {
 
 #[test]
 fn analysis_options_c() {
-  let named_output = analyse_file("tests/content/seitseman_veljesta.txt", ANALYSIS_OPTIONS_C);
+  let named_output = task::block_on(async {
+    analyse_file("tests/content/seitseman_veljesta.txt", ANALYSIS_OPTIONS_C).await
+  });
   match named_output {
     Success { filename, stats } => {
       println!("{}", filename);
@@ -111,7 +121,9 @@ fn analysis_options_c() {
 
 #[test]
 fn analysis_options_lw() {
-  let named_output = analyse_file("tests/content/seitseman_veljesta.txt", ANALYSIS_OPTIONS_LW);
+  let named_output = task::block_on(async {
+    analyse_file("tests/content/seitseman_veljesta.txt", ANALYSIS_OPTIONS_LW).await
+  });
   match named_output {
     Success { filename, stats } => {
       println!("{}", filename);
@@ -127,7 +139,9 @@ fn analysis_options_lw() {
 
 #[test]
 fn analysis_options_lc() {
-  let named_output = analyse_file("tests/content/seitseman_veljesta.txt", ANALYSIS_OPTIONS_LC);
+  let named_output = task::block_on(async {
+    analyse_file("tests/content/seitseman_veljesta.txt", ANALYSIS_OPTIONS_LC).await
+  });
   match named_output {
     Success { filename, stats } => {
       println!("{}", filename);
@@ -143,7 +157,9 @@ fn analysis_options_lc() {
 
 #[test]
 fn analysis_options_wc() {
-  let named_output = analyse_file("tests/content/seitseman_veljesta.txt", ANALYSIS_OPTIONS_WC);
+  let named_output = task::block_on(async {
+    analyse_file("tests/content/seitseman_veljesta.txt", ANALYSIS_OPTIONS_WC).await
+  });
   match named_output {
     Success { filename, stats } => {
       println!("{}", filename);
