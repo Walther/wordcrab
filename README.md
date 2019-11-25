@@ -1,5 +1,10 @@
 # wordcrab
 
+[![Build Status](https://travis-ci.org/Walther/wordcrab.svg?branch=master)](https://travis-ci.org/Walther/wordcrab)
+[![codecov](https://codecov.io/gh/Walther/wordcrab/branch/master/graph/badge.svg)](https://codecov.io/gh/Walther/wordcrab)
+![Maintenance](https://img.shields.io/badge/maintenance-experimental-blue.svg)
+
+
 `wordcrab` is a command-line tool for counting lines, words and characters in documents.
 
 It is intended as a cross-platform, modern replacement for `wc`.
