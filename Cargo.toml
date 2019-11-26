@@ -11,6 +11,9 @@ readme = "README.md"
 
 [badges]
 maintenance = { status = "experimental" }
+travis-ci = { repository = "Walther/wordcrab", branch = "master" }
+codecov = { repository = "Walther/wordcrab", branch = "master", service = "github" }
+
 
 [dependencies]
 structopt = "0.3.5"
