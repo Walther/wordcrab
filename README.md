@@ -26,6 +26,8 @@ _TODO: installers in various OS package managers._
 - [ ] Publish on other platforms, which?
 - [ ] Write a blogpost about the process of making this; as a showcase of creating and publishing a tool
 - [x] Optional JSON output format
+- [x] Optional YAML output format
+- [x] Optional TOML output format
 - [x] Concurrency with `rayon`
 - [ ] Benchmark & write a blogpost about the process of benchmarking a simple tool
 - [x] More options: `-l`, `-w`, `-c` similar to `wc`

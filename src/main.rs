@@ -3,8 +3,10 @@ use clap::AppSettings;
 use rayon::prelude::*;
 use serde_json::json;
 use serde_yaml;
+use std::error::Error;
 use std::path::PathBuf;
 use structopt::StructOpt;
+use toml;
 
 pub mod lib;
 use lib::{analyse_file, analyse_files, AnalysisOptions};
@@ -43,7 +45,7 @@ struct Opt {
     chars: bool,
 
     /// Select the output format
-    #[structopt(short, long, possible_values = &["text", "json", "yaml"], default_value = "text")]
+    #[structopt(short, long, possible_values = &["text", "json", "yaml", "toml"], default_value = "text")]
     output: String,
 
     /// Files to process
@@ -51,7 +53,7 @@ struct Opt {
     files: Vec<PathBuf>,
 }
 
-fn main() -> std::io::Result<()> {
+fn main() -> Result<(), Box<dyn Error>> {
     let mut opt = Opt::from_args();
     if opt.debug {
         println!("raw opts:");
@@ -91,6 +93,10 @@ fn main() -> std::io::Result<()> {
         "json" => {
             let results = analyse_files(&filenames, analysis_options);
             println!("{}", json!(results))
+        }
+        "toml" => {
+            let results = analyse_files(&filenames, analysis_options);
+            println!("{}", toml::to_string(&results)?)
         }
         "yaml" => {
             let results = analyse_files(&filenames, analysis_options);
