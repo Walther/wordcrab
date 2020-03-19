@@ -19,7 +19,7 @@ codecov = { repository = "Walther/wordcrab", branch = "master", service = "githu
 structopt = "0.3.8"
 clap = "2.33.0"
 serde = "1.0.104"
-serde_derive = "1.0.104"
+serde_derive = "1.0.105"
 serde_json = "1.0.46"
 serde_yaml = "0.8.11"
 toml = "0.5.6"
