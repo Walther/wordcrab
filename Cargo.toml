@@ -16,7 +16,7 @@ codecov = { repository = "Walther/wordcrab", branch = "master", service = "githu
 
 
 [dependencies]
-structopt = "0.3.14"
+structopt = "0.3.15"
 clap = "2.33.1"
 serde = "1.0.111"
 serde_derive = "1.0.111"
