@@ -1,18 +1,17 @@
 #![deny(clippy::all)]
-use clap::AppSettings;
+use clap::{AppSettings, Clap};
 use rayon::prelude::*;
 use serde_json::json;
 use serde_yaml;
 use std::error::Error;
 use std::path::PathBuf;
-use structopt::StructOpt;
 use toml;
 
 pub mod lib;
 use lib::{analyse_file, analyse_files, AnalysisOptions};
 
-#[derive(StructOpt, Debug)]
-#[structopt(
+#[derive(Clap, Debug)]
+#[clap(
     name = "wordcrab",
     about = "A command-line tool for counting lines, words and characters in documents.
 
@@ -22,39 +21,39 @@ When analysis options (any combination of -l, -w, -c) are specified, wordcrab on
 
 Multiple output formats are supported in addition to the standard text output.
 ",
-    global_settings = &[AppSettings::ColoredHelp]
+    global_setting = AppSettings::ColoredHelp
 )]
 struct Opt {
     /// Activate debug mode
-    #[structopt(short, long)]
+    #[clap(short, long)]
     debug: bool,
 
     /// Count the number of lines.
     /// Based on \n and \r\n
-    #[structopt(short, long)]
+    #[clap(short, long)]
     lines: bool,
 
     /// Count the number of words.
     /// Based on the Unicode Derived Core Property White_Space
-    #[structopt(short, long)]
+    #[clap(short, long)]
     words: bool,
 
     /// Count the number of chars.
     /// Based on the Unicode Scalar Value
-    #[structopt(short, long)]
+    #[clap(short, long)]
     chars: bool,
 
     /// Select the output format
-    #[structopt(short, long, possible_values = &["text", "json", "yaml", "toml"], default_value = "text")]
+    #[clap(short, long, possible_values = &["text", "json", "yaml", "toml"], default_value = "text")]
     output: String,
 
     /// Files to process
-    #[structopt(name = "FILE", parse(from_os_str))]
+    #[clap(name = "FILE", parse(from_os_str))]
     files: Vec<PathBuf>,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let mut opt = Opt::from_args();
+    let mut opt = Opt::parse();
     if opt.debug {
         println!("raw opts:");
         println!("{:#?}", opt);
@@ -105,7 +104,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 Err(e) => panic!("{}", e),
             }
         }
-        _ => unreachable!(), // structopt has explicit list of possible_values and a default_value
+        _ => unreachable!(), // clap has explicit list of possible_values and a default_value
     }
     Ok(())
 }
