@@ -18,24 +18,16 @@ jobs:
         run: cargo build --verbose
       - name: Tests
         run: cargo test --verbose
-
-  coverage:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Generate coverage report
+      - name: Coverage
         run: |
-          sudo apt install libelf-dev &&
-          wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz &&
-          tar xzf master.tar.gz &&
-          cd kcov-master &&
-          mkdir build &&
-          cd build &&
-          cmake .. &&
-          make &&
-          make install DESTDIR=../../kcov-build &&
-          cd ../.. &&
-          rm -rf kcov-master &&
-          for file in target/debug/wordcrab-*[^\.d]; do mkdir -p "target/cov/$(basename $file)"; ./kcov-build/usr/local/bin/kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"; done &&
-          bash <(curl -s https://codecov.io/bash) &&
-          echo "Uploaded code coverage"
+          rustup toolchain install nightly &&
+          rustup overide set nightly &&
+          cargo install grcov &&
+          rustup component add llvm-tools-preview &&
+          rm -rf ./target *.prof* &&
+          export RUSTFLAGS="-Zinstrument-coverage" &&
+          cargo build &&
+          cargo test &&
+          grcov . --binary-path ./target/debug/ -s . -t html --branch --ignore-not-existing -o ./coverage/ &&
+          grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing -o ./lcov.info &&
+          bash <(curl -s https://codecov.io/bash) -f lcov.info
