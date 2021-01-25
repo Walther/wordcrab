@@ -1,6 +1,6 @@
 # wordcrab
 
-[![Build Status](https://github.com/Walther/wordcrab/workflows/Rust/badge.svg](https://github.com/Walther/wordcrab/actions)
+[![Build Status](https://github.com/Walther/wordcrab/workflows/Rust/badge.svg)](https://github.com/Walther/wordcrab/actions)
 [![codecov](https://codecov.io/gh/Walther/wordcrab/branch/master/graph/badge.svg)](https://codecov.io/gh/Walther/wordcrab)
 ![Maintenance](https://img.shields.io/badge/maintenance-experimental-blue.svg)
 
