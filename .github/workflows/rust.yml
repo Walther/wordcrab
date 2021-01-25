@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Generate coverage report
         run: |
-          apt install libelf-dev &&
+          sudo apt install libelf-dev &&
           wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz &&
           tar xzf master.tar.gz &&
           cd kcov-master &&
