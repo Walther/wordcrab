@@ -21,7 +21,7 @@ jobs:
       - name: Coverage
         run: |
           rustup toolchain install nightly &&
-          rustup overide set nightly &&
+          rustup override set nightly &&
           cargo install grcov &&
           rustup component add llvm-tools-preview &&
           rm -rf ./target *.prof* &&
