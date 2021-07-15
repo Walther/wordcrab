@@ -56,7 +56,7 @@ fn analysis_options_all() {
             assert_eq!(stats.chars, Some(661759));
         }
         Error { filename: _, error } => {
-            panic!(error);
+            std::panic::panic_any(error);
         }
     }
 }
@@ -72,7 +72,7 @@ fn analysis_options_l() {
             assert_eq!(stats.chars, None);
         }
         Error { filename: _, error } => {
-            panic!(error);
+            std::panic::panic_any(error);
         }
     }
 }
@@ -88,7 +88,7 @@ fn analysis_options_w() {
             assert_eq!(stats.chars, None);
         }
         Error { filename: _, error } => {
-            panic!(error);
+            std::panic::panic_any(error);
         }
     }
 }
@@ -104,7 +104,7 @@ fn analysis_options_c() {
             assert_eq!(stats.chars, Some(661759));
         }
         Error { filename: _, error } => {
-            panic!(error);
+            std::panic::panic_any(error);
         }
     }
 }
@@ -120,7 +120,7 @@ fn analysis_options_lw() {
             assert_eq!(stats.chars, None);
         }
         Error { filename: _, error } => {
-            panic!(error);
+            std::panic::panic_any(error);
         }
     }
 }
@@ -136,7 +136,7 @@ fn analysis_options_lc() {
             assert_eq!(stats.chars, Some(661759));
         }
         Error { filename: _, error } => {
-            panic!(error);
+            std::panic::panic_any(error);
         }
     }
 }
@@ -152,7 +152,7 @@ fn analysis_options_wc() {
             assert_eq!(stats.chars, Some(661759));
         }
         Error { filename: _, error } => {
-            panic!(error);
+            std::panic::panic_any(error);
         }
     }
 }
