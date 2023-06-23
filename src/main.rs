@@ -1,5 +1,5 @@
 #![deny(clippy::all)]
-use clap::{AppSettings, Clap};
+use clap::Parser;
 use rayon::prelude::*;
 use serde_json::json;
 
@@ -8,7 +8,7 @@ use std::path::PathBuf;
 
 use wordcrab::{analyse_file, analyse_files, AnalysisOptions};
 
-#[derive(Clap, Debug)]
+#[derive(Parser, Debug)]
 #[clap(
     name = "wordcrab",
     about = "A command-line tool for counting lines, words and characters in documents.
@@ -18,8 +18,7 @@ It is a modern, cross-platform replacement for wc(1).
 When analysis options (any combination of -l, -w, -c) are specified, wordcrab only analyses and reports the information requested. The order of output is always line, word, chars, filename. By default, -lwc is assumed.
 
 Multiple output formats are supported in addition to the standard text output.
-",
-    global_setting = AppSettings::ColoredHelp
+"
 )]
 struct Opt {
     /// Activate debug mode
@@ -42,11 +41,11 @@ struct Opt {
     chars: bool,
 
     /// Select the output format
-    #[clap(short, long, possible_values = &["text", "json", "yaml", "toml"], default_value = "text")]
+    #[clap(short, long, value_parser = ["text", "json", "yaml", "toml"], default_value = "text")]
     output: String,
 
     /// Files to process
-    #[clap(name = "FILE", parse(from_os_str))]
+    #[clap(name = "FILE", value_parser)]
     files: Vec<PathBuf>,
 }
 

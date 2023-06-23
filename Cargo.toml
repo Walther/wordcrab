@@ -22,13 +22,13 @@ crate-type = ["lib"]
 name = "wordcrab"
 
 [dependencies]
-clap = "3.0.0-beta.2"
+clap = { version = "4.3.4", features = ["default", "derive", "color"] }
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
 serde_yaml = "0.8"
-toml = "0.5.8"
-rayon = "1.5.0"
+toml = "0.5.11"
+rayon = "1.7.0"
 
 [profile.release]
 lto = true
