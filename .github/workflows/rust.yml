@@ -18,6 +18,11 @@ jobs:
         run: cargo build --verbose
       - name: Tests
         run: cargo test --verbose
+        env:
+          # from https://github.com/codecov/example-rust/blob/e028eb7e305182a939027adaeba0fc3c4d0cd6b5/.github/workflows/rust.yml
+          CARGO_INCREMENTAL: "0"
+          RUSTFLAGS: "-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests"
+          RUSTDOCFLAGS: "-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests"
       - name: rust-grcov
         uses: actions-rs/grcov@v0.1.5
       - name: Codecov
