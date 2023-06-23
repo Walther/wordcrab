@@ -9,11 +9,6 @@ repository = "https://github.com/Walther/wordcrab"
 categories = ["command-line-utilities"]
 readme = "README.md"
 
-[badges]
-maintenance = { status = "experimental" }
-travis-ci = { repository = "Walther/wordcrab", branch = "master" }
-codecov = { repository = "Walther/wordcrab", branch = "master", service = "github" }
-
 [lib]
 name = "wordcrab"
 crate-type = ["lib"]

@@ -2,9 +2,9 @@ name: Rust
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 env:
   CARGO_TERM_COLOR: always
@@ -18,16 +18,10 @@ jobs:
         run: cargo build --verbose
       - name: Tests
         run: cargo test --verbose
-      - name: Coverage
-        run: |
-          rustup toolchain install nightly &&
-          rustup override set nightly &&
-          cargo install grcov &&
-          rustup component add llvm-tools-preview &&
-          rm -rf ./target *.prof* &&
-          export RUSTFLAGS="-Zinstrument-coverage" &&
-          cargo build &&
-          cargo test &&
-          grcov . --binary-path ./target/debug/ -s . -t html --branch --ignore-not-existing -o ./coverage/ &&
-          grcov . --binary-path ./target/debug/ -s . -t lcov --branch --ignore-not-existing -o ./lcov.info &&
-          bash <(curl -s https://codecov.io/bash) -f lcov.info
+      - name: rust-grcov
+        uses: actions-rs/grcov@v0.1.5
+      - name: Codecov
+        uses: codecov/codecov-action@v3.1.0
+        with:
+          verbose: true
+          fail_ci_if_error: true
