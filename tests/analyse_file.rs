@@ -16,7 +16,7 @@ fn long_file() {
             assert_eq!(stats.chars, Some(661759));
         }
         Error { filename: _, error } => {
-            panic!(error);
+            panic!("{}", error);
         }
     }
 }

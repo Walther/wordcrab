@@ -1,28 +1,29 @@
 [package]
 name = "wordcrab"
-version = "0.12.0"
+version = "0.13.0"
 authors = ["Walther <veeti.haapsamo@gmail.com>"]
-edition = "2018"
+edition = "2021"
 license = "MIT OR Apache-2.0"
 description = "A command-line tool for counting lines, words and characters in documents."
 repository = "https://github.com/Walther/wordcrab"
 categories = ["command-line-utilities"]
 readme = "README.md"
 
-[badges]
-maintenance = { status = "experimental" }
-travis-ci = { repository = "Walther/wordcrab", branch = "master" }
-codecov = { repository = "Walther/wordcrab", branch = "master", service = "github" }
+[lib]
+name = "wordcrab"
+crate-type = ["lib"]
 
+[[bin]]
+name = "wordcrab"
 
 [dependencies]
-clap = "3.0.0-beta.2"
+clap = { version = "4.3.4", features = ["default", "derive", "color"] }
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
 serde_yaml = "0.8"
-toml = "0.5.8"
-rayon = "1.5.0"
+toml = "0.5.11"
+rayon = "1.7.0"
 
 [profile.release]
 lto = true

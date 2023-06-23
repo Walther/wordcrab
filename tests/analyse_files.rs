@@ -22,7 +22,7 @@ fn multiple_empty_files() {
                 assert_eq!(stats.chars, Some(0));
             }
             Error { filename: _, error } => {
-                panic!(error);
+                panic!("{}", error);
             }
         }
     }
