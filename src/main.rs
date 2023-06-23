@@ -2,13 +2,11 @@
 use clap::{AppSettings, Clap};
 use rayon::prelude::*;
 use serde_json::json;
-use serde_yaml;
+
 use std::error::Error;
 use std::path::PathBuf;
-use toml;
 
-pub mod lib;
-use lib::{analyse_file, analyse_files, AnalysisOptions};
+use wordcrab::{analyse_file, analyse_files, AnalysisOptions};
 
 #[derive(Clap, Debug)]
 #[clap(
@@ -87,7 +85,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     // in order to output a correct file
     match opt.output.as_str() {
         "text" => filenames.par_iter().for_each(|filename| {
-            println!("{}", analyse_file(&filename, analysis_options));
+            println!("{}", analyse_file(filename, analysis_options));
         }),
         "json" => {
             let results = analyse_files(&filenames, analysis_options);

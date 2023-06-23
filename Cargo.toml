@@ -14,6 +14,12 @@ maintenance = { status = "experimental" }
 travis-ci = { repository = "Walther/wordcrab", branch = "master" }
 codecov = { repository = "Walther/wordcrab", branch = "master", service = "github" }
 
+[lib]
+name = "wordcrab"
+crate-type = ["lib"]
+
+[[bin]]
+name = "wordcrab"
 
 [dependencies]
 clap = "3.0.0-beta.2"

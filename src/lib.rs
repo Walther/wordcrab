@@ -59,7 +59,7 @@ pub enum NamedOutput {
 /// Display as String for CLI use
 impl fmt::Display for NamedOutput {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match &*self {
+        match self {
             // NOTE: intentional spacing here, as stats leave a trailing space
             NamedOutput::Success { filename, stats } => write!(f, "{}{}", stats, filename),
             NamedOutput::Error { filename, error } => write!(f, "{} {}", error, filename),
